@@ -1,0 +1,37 @@
+<!-- frontend/index.html -->
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>OCR Upload</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 2rem; max-width: 700px; margin:auto; }
+    label { display:block; margin-top:1rem; }
+  </style>
+</head>
+<body>
+  <h1>OCR Document Upload</h1>
+  <p>Use the form to upload (API key: <code>dev-key</code> for testing).</p>
+  <form id="f">
+    <label>File: <input type="file" name="file" id="file" /></label>
+    <label>API Key: <input type="text" id="key" value="dev-key" /></label>
+    <button type="submit">Upload</button>
+  </form>
+
+  <pre id="out"></pre>
+
+  <script>
+    document.getElementById('f').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const file = document.getElementById('file').files[0];
+      const key = document.getElementById('key').value;
+      if(!file){ alert('pick a file'); return; }
+      const fd = new FormData();
+      fd.append('file', file);
+      const resp = await fetch('/upload', { method:'POST', body:fd, headers: { 'x-api-key': key }});
+      const json = await resp.json();
+      document.getElementById('out').textContent = JSON.stringify(json, null, 2);
+    });
+  </script>
+</body>
+</html>
